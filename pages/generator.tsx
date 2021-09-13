@@ -10,12 +10,12 @@ export default function Generator({ gifs }: { gifs: any }) {
         <meta name="description" content="Generate LGTM Gif from GIPHY" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <form>
-        <label>
-          <input type="text" name="search" />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <div className="w-3/5">
+        <form className="flex justify-center mt-10">
+          <input type="search" name="search" className="inline-block bg-white text-gray-700 border border-gray-300 rounded py-2 px-4 mr-1 focus:outline-none focus:bg-white focus:border-gray-500 w-3/6" />
+          <input type="submit" value="Search" className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-1/6 content-center" />
+        </form>
+      </div>
       <div className={styles.grid}>
         {gifs.data.map((data: any) => (
           <div key={data.id} className={styles.card}>
