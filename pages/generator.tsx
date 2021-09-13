@@ -1,5 +1,5 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Generator.module.css";
 import { GetStaticProps } from "next";
 
 export default function Generator({ gifs }: { gifs: any }) {
@@ -15,14 +15,14 @@ export default function Generator({ gifs }: { gifs: any }) {
           <input type="text" name="search" />
         </label>
         <input type="submit" value="Submit" />
-        <ul>
-          {gifs.data.map((data: any) => (
-            <li key={data.id}>
-              <img src={data.images.fixed_width.url}></img>
-            </li>
-          ))}
-        </ul>
       </form>
+      <div className={styles.grid}>
+        {gifs.data.map((data: any) => (
+          <div key={data.id} className={styles.card}>
+            <img src={data.images.fixed_width.url}></img>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -31,7 +31,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const giphyApiKey = process.env.GIPHY_API_KEY;
   let gifs;
   const response = await fetch(
-    `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=12&rating=g`
+    `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`
   )
     .then((res) => res.json())
     .then((json) => {
