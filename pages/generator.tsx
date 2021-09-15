@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Gif from "../components/gif";
 import styles from "../styles/Generator.module.css";
 import { GetStaticProps } from "next";
 
@@ -18,9 +19,7 @@ export default function Generator({ gifs }: { gifs: any }) {
       </div>
       <div className={styles.grid}>
         {gifs.data.map((data: any) => (
-          <div key={data.id} className={styles.card}>
-            <img src={data.images.fixed_width.url}></img>
-          </div>
+          <Gif key={data.id} gif={data}></Gif>
         ))}
       </div>
     </div>
