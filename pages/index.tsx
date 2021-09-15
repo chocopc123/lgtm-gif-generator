@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import Link from "next/link";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
   return (
@@ -19,8 +19,7 @@ const Home: NextPage = () => {
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
+          Get started by editing <code className={styles.code}>pages/index.js</code>
         </p>
 
         <div className={styles.grid}>
@@ -34,10 +33,7 @@ const Home: NextPage = () => {
             <p>Learn about Next.js in an interactive course with quizzes!</p>
           </a>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
+          <a href="https://github.com/vercel/next.js/tree/master/examples" className={styles.card}>
             <h2>Examples &rarr;</h2>
             <p>Discover and deploy boilerplate example Next.js projects.</p>
           </a>
@@ -56,7 +52,7 @@ const Home: NextPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
+          Powered by{' '}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
