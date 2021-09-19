@@ -11,7 +11,6 @@ type Props = {
 export default class Modal extends React.Component<Props> {
   constructor(props: any) {
     super(props);
-    console.log(this.props.toggleModal);
   }
   render() {
     return (
