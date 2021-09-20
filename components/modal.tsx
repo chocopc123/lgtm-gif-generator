@@ -27,6 +27,7 @@ export default class Modal extends React.Component<Props> {
                 width={this.props.data.images.fixed_width.width}
                 height={this.props.data.images.fixed_width.height}
               />
+              <canvas id="test_canvas" className="border" width="256" height="256"></canvas>
               <hr className="my-2" />
               <button className={styles.button} onClick={this.props.toggleModal}>
                 Close
