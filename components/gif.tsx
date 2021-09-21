@@ -49,7 +49,7 @@ export default class Gif extends React.Component<Props, State> {
     const i8ary = await this.getGifBinary();
     const imageArray = this.createImageArray(i8ary);
     console.log(imageArray);
-    this.showImage(imageArray);
+    this.drawText(imageArray);
     this.setState({ visibility: 'visible' });
   }
 
@@ -86,9 +86,18 @@ export default class Gif extends React.Component<Props, State> {
     return array;
   }
 
-  showImage(imageArray: Array<ImageData>) {
+  drawText(imageArray: Array<ImageData>) {
     const canvas = document.getElementById('test_canvas') as HTMLCanvasElement;
+    const width = imageArray[0].width;
+    const height = imageArray[0].height;
     const testContext = canvas.getContext('2d');
     testContext?.putImageData(imageArray[0], 0, 0);
+    testContext!.textAlign = 'center';
+    testContext!.textBaseline = 'middle';
+    testContext!.fillStyle = 'white';
+    testContext!.font = '40px Impact';
+    testContext?.fillText('L G T M', width / 2, height / 2);
+    testContext!.font = '10px sans-serif';
+    testContext?.fillText('Looks Good To Me', width / 2, height / 2 + 25);
   }
 }
