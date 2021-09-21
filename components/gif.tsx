@@ -33,13 +33,12 @@ export default class Gif extends React.Component<Props, State> {
           />
         </div>
         {this.state.showModal && (
-          <div className={this.state.visibility}>
-            <Modal
-              name={this.state.name}
-              data={this.props.gif}
-              toggleModal={() => this.toggleModal()}
-            />
-          </div>
+          <Modal
+            name={this.state.name}
+            data={this.props.gif}
+            toggleModal={() => this.toggleModal()}
+            visibility={this.state.visibility}
+          />
         )}
       </div>
     );
@@ -55,6 +54,7 @@ export default class Gif extends React.Component<Props, State> {
   }
 
   toggleModal() {
+    this.setState({ visibility: 'invisible' });
     this.setState({ showModal: !this.state.showModal });
   }
 

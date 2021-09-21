@@ -1,11 +1,13 @@
 import React from 'react';
 import styles from '../styles/Modal.module.css';
 import Image from 'next/image';
+import Loading from '../components/loading';
 
 type Props = {
   name: string;
   data: any;
   toggleModal: any;
+  visibility: string;
 };
 
 export default class Modal extends React.Component<Props> {
@@ -27,7 +29,13 @@ export default class Modal extends React.Component<Props> {
                 width={this.props.data.images.fixed_width.width}
                 height={this.props.data.images.fixed_width.height}
               />
-              <canvas id="test_canvas" className="border" width="256" height="256"></canvas>
+              {this.props.visibility === 'invisible' && <Loading />}
+              <canvas
+                id="test_canvas"
+                className={this.props.visibility + ' border'}
+                width="256"
+                height="256"
+              ></canvas>
               <hr className="my-2" />
               <button className={styles.button} onClick={this.props.toggleModal}>
                 Close
