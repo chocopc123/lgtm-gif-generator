@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "gif.js.optimized": "^1.0.1",
     "next": "11.1.2",
     "omggif": "^1.0.10",
     "react": "17.0.2",
