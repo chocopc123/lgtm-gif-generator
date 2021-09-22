@@ -30,12 +30,7 @@ export default class Modal extends React.Component<Props> {
                 height={this.props.data.images.fixed_width.height}
               />
               {this.props.visibility === 'invisible' && <Loading />}
-              <canvas
-                id="test_canvas"
-                className={this.props.visibility + ' border'}
-                width="256"
-                height="256"
-              ></canvas>
+              <img id="preview" className={this.props.visibility + ' border'} />
               <hr className="my-2" />
               <button className={styles.button} onClick={this.props.toggleModal}>
                 Close

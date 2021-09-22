@@ -3,6 +3,7 @@ import styles from '../styles/Generator.module.css';
 import Image from 'next/image';
 import Modal from '../components/modal';
 const { GifReader } = require('omggif');
+const GIF = require('gif.js');
 
 type Props = { gif: any };
 type State = {
@@ -48,9 +49,7 @@ export default class Gif extends React.Component<Props, State> {
     this.toggleModal();
     const i8ary = await this.getGifBinary();
     const imageArray = this.createImageArray(i8ary);
-    console.log(imageArray);
-    this.drawText(imageArray);
-    this.setState({ visibility: 'visible' });
+    this.renderLgtmGif(imageArray);
   }
 
   toggleModal() {
@@ -62,7 +61,6 @@ export default class Gif extends React.Component<Props, State> {
     return new Promise<any>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', this.props.gif.images.fixed_width.url, true);
-      console.log(this.props.gif.images.original.frames + 'frames');
       xhr.responseType = 'arraybuffer';
       xhr.onload = function (e) {
         const arrayBuffer = this.response;
@@ -78,26 +76,55 @@ export default class Gif extends React.Component<Props, State> {
 
   createImageArray(binary: Uint8Array) {
     const reader = new GifReader(binary);
-    const array = new Array(reader.numFrames()).fill(0).map((_, k) => {
+    const array = new Array(reader.numFrames()).fill(0);
+    array.forEach((_, currentFrame) => {
+      const previousFlame = currentFrame - 1;
+      const frameInfo = reader.frameInfo(currentFrame);
       const image = new ImageData(reader.width, reader.height);
-      reader.decodeAndBlitFrameRGBA(k, image.data as any);
-      return image;
+      if (currentFrame >= 1 && frameInfo.disposal < 2) {
+        image.data.set(new Uint8ClampedArray(array[previousFlame].data.data));
+      }
+      array[currentFrame] = {
+        data: image,
+        delay: reader.frameInfo(currentFrame).delay * 10,
+      };
+      reader.decodeAndBlitFrameRGBA(currentFrame, image.data);
     });
     return array;
   }
 
-  drawText(imageArray: Array<ImageData>) {
-    const canvas = document.getElementById('test_canvas') as HTMLCanvasElement;
-    const width = imageArray[0].width;
-    const height = imageArray[0].height;
-    const testContext = canvas.getContext('2d');
-    testContext?.putImageData(imageArray[0], 0, 0);
-    testContext!.textAlign = 'center';
-    testContext!.textBaseline = 'middle';
-    testContext!.fillStyle = 'white';
-    testContext!.font = '40px Impact';
-    testContext?.fillText('L G T M', width / 2, height / 2);
-    testContext!.font = '10px sans-serif';
-    testContext?.fillText('Looks Good To Me', width / 2, height / 2 + 25);
+  drawText(image: ImageData) {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    const context = canvas.getContext('2d');
+    context?.putImageData(image, 0, 0);
+    context!.textAlign = 'center';
+    context!.textBaseline = 'middle';
+    context!.fillStyle = 'white';
+    context!.font = '40px Impact';
+    context?.fillText('L G T M', image.width / 2, image.height / 2);
+    context!.font = '10px sans-serif';
+    context?.fillText('Looks Good To Me', image.width / 2, image.height / 2 + 25);
+    return canvas;
+  }
+
+  renderLgtmGif(imageArray: Array<any>) {
+    const gif = new GIF({
+      workers: 1,
+      workerScript: '/api/gif.js/gif.worker',
+      quality: 10,
+    });
+    imageArray.forEach((image) => {
+      const canvasElement = this.drawText(image.data);
+      gif.addFrame(canvasElement, { delay: image.delay });
+    });
+    gif.render();
+    const self = this;
+    gif.on('finished', function (blob: any) {
+      const preview = document.getElementById('preview') as HTMLImageElement;
+      preview.src = URL.createObjectURL(blob);
+      preview.addEventListener('load', (e) => {
+        self.setState({ visibility: 'visible' });
+      });
+    });
   }
 }
