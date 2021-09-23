@@ -125,6 +125,7 @@ export default class Gif extends React.Component<Props, State> {
     const self = this;
     gif.on('finished', function (blob: any) {
       const preview = document.getElementById('preview') as HTMLImageElement;
+      blob.download = 'LGTM.gif';
       preview.src = URL.createObjectURL(blob);
       preview.addEventListener('load', (e) => {
         self.setState({ visibility: 'visible' });

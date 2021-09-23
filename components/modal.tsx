@@ -32,13 +32,26 @@ export default class Modal extends React.Component<Props> {
               {this.props.visibility === 'invisible' && <Loading />}
               <img id="preview" className={this.props.visibility + ' border'} />
               <hr className="my-2" />
-              <button className={styles.button} onClick={this.props.toggleModal}>
+              <button className={styles.closeButton} onClick={this.props.toggleModal}>
                 Close
+              </button>
+              <button className={styles.downloadButton} onClick={this.downloadGif}>
+                Download
               </button>
             </div>
           </div>
         </div>
       </div>
     );
+  }
+
+  downloadGif() {
+    const preview = document.getElementById('preview') as HTMLImageElement;
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.download = 'LGTM.gif';
+    a.href = preview.src;
+    a.click();
+    a.remove();
   }
 }
