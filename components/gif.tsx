@@ -93,9 +93,12 @@ export default class Gif extends React.Component<Props, State> {
     return array;
   }
 
-  drawText(image: ImageData) {
+  drawText(image: ImageData, i: number) {
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    canvas.height = image.height;
+    canvas.width = image.width;
     const context = canvas.getContext('2d');
+
     context?.putImageData(image, 0, 0);
     context!.textAlign = 'center';
     context!.textBaseline = 'middle';
@@ -109,15 +112,16 @@ export default class Gif extends React.Component<Props, State> {
 
   renderLgtmGif(imageArray: Array<any>) {
     const gif = new GIF({
-      workers: 1,
+      workers: 2,
       workerScript: '/api/gif.js/gif.worker',
       quality: 10,
+      width: imageArray[0].data.width,
+      height: imageArray[0].data.height,
     });
-    imageArray.forEach((image) => {
-      const canvasElement = this.drawText(image.data);
+    imageArray.forEach((image, i) => {
+      const canvasElement = this.drawText(image.data, i);
       gif.addFrame(canvasElement, { delay: image.delay });
     });
-    gif.render();
     const self = this;
     gif.on('finished', function (blob: any) {
       const preview = document.getElementById('preview') as HTMLImageElement;
@@ -126,5 +130,6 @@ export default class Gif extends React.Component<Props, State> {
         self.setState({ visibility: 'visible' });
       });
     });
+    gif.render();
   }
 }
