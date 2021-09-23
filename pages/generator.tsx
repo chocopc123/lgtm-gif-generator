@@ -54,11 +54,12 @@ export default class Generator extends React.Component<Props, State> {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
     this.changeUrlParams(searchString);
-    await fetch(`/api/search?search=${searchString}`)
+    const gifs = await fetch(`/api/search?search=${searchString}`)
       .then((response) => response.json())
-      .then((data) => {
-        this.setState({ gifs: data });
+      .catch((err) => {
+        console.error('Error:', err);
       });
+    this.setState({ gifs: gifs });
   }
 
   changeUrlParams(searchString: string) {
@@ -70,13 +71,10 @@ export default class Generator extends React.Component<Props, State> {
 
 export const getStaticProps: GetStaticProps = async () => {
   const giphyApiKey = process.env.GIPHY_API_KEY;
-  let gifs;
-  await fetch(`https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`)
+  const gifs = await fetch(
+    `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`
+  )
     .then((res) => res.json())
-    .then((json) => {
-      console.log(json);
-      gifs = json;
-    })
     .catch((err) => {
       console.error('Error:', err);
     });
