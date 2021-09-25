@@ -8,6 +8,7 @@ type Props = {
   data: any;
   toggleModal: any;
   visibility: string;
+  rendered: boolean;
 };
 
 export default class Modal extends React.Component<Props> {
@@ -39,7 +40,11 @@ export default class Modal extends React.Component<Props> {
               <button className={styles.closeButton} onClick={this.props.toggleModal}>
                 Close
               </button>
-              <button className={styles.downloadButton} onClick={this.downloadGif}>
+              <button
+                className={styles.downloadButton}
+                onClick={this.downloadGif}
+                disabled={this.props.rendered}
+              >
                 Download
               </button>
             </div>

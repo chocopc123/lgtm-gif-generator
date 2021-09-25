@@ -10,6 +10,7 @@ type State = {
   name: string;
   showModal: boolean;
   visibility: string;
+  rendered: boolean;
 };
 
 export default class Gif extends React.Component<Props, State> {
@@ -19,6 +20,7 @@ export default class Gif extends React.Component<Props, State> {
       name: 'modalArea',
       showModal: false,
       visibility: 'invisible',
+      rendered: true,
     };
   }
 
@@ -39,6 +41,7 @@ export default class Gif extends React.Component<Props, State> {
             data={this.props.gif}
             toggleModal={() => this.toggleModal()}
             visibility={this.state.visibility}
+            rendered={this.state.rendered}
           />
         )}
       </div>
@@ -126,6 +129,7 @@ export default class Gif extends React.Component<Props, State> {
     gif.on('finished', function (blob: any) {
       const preview = document.getElementById('preview') as HTMLImageElement;
       preview.src = URL.createObjectURL(blob);
+      self.setState({ rendered: false });
       preview.addEventListener('load', (e) => {
         self.setState({ visibility: 'visible' });
       });
