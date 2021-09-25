@@ -12,7 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (searchString === '') {
     url = `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`;
   } else {
-    url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${req.query.search}&limit=15&offset=0&rating=g&lang=en`;
+    url = encodeURI(
+      `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${req.query.search}&limit=15&offset=0&rating=g&lang=en`
+    );
   }
   const gifs = await fetch(url)
     .then((res) => res.json())
