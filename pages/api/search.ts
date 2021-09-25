@@ -7,9 +7,14 @@ type Data = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const giphyApiKey = process.env.GIPHY_API_KEY;
-  const gifs = await fetch(
-    `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${req.query.search}&limit=15&offset=0&rating=g&lang=en`
-  )
+  const searchString = req.query.search;
+  let url;
+  if (searchString === '') {
+    url = `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`;
+  } else {
+    url = `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${req.query.search}&limit=15&offset=0&rating=g&lang=en`;
+  }
+  const gifs = await fetch(url)
     .then((res) => res.json())
     .catch((err) => {
       console.error('Error:', err);
