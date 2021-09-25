@@ -26,7 +26,7 @@ export default class Generator extends React.Component<Props, State> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <div className="w-3/5">
-          <div className="flex justify-center mt-10">
+          <form className="flex justify-center mt-10" onSubmit={(e) => this.getGif(e)}>
             <input
               id="search"
               type="search"
@@ -34,12 +34,12 @@ export default class Generator extends React.Component<Props, State> {
               className="inline-block bg-white text-gray-700 border border-gray-300 rounded py-2 px-4 mr-1 focus:outline-none focus:bg-white focus:border-gray-400 w-3/6"
             />
             <input
-              type="submit"
+              type="button"
               value="Search"
               className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-1/6 content-center"
-              onClick={() => this.getGif()}
+              onClick={(e) => this.getGif(e)}
             />
-          </div>
+          </form>
         </div>
         <div className={styles.grid}>
           {this.state.gifs.data.map((data: any) => (
@@ -50,7 +50,8 @@ export default class Generator extends React.Component<Props, State> {
     );
   }
 
-  async getGif() {
+  async getGif(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
     this.changeUrlParams(searchString);
