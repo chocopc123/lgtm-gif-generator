@@ -11,7 +11,7 @@ type State = {
   name: string;
   gifLoaded: boolean;
   showModal: boolean;
-  modalVisibility: boolean;
+  generateGifLoaded: boolean;
   generateGifRendered: boolean;
 };
 
@@ -22,7 +22,7 @@ export default class Gif extends React.Component<Props, State> {
       name: 'modalArea',
       gifLoaded: false,
       showModal: false,
-      modalVisibility: false,
+      generateGifLoaded: false,
       generateGifRendered: false,
     };
   }
@@ -56,8 +56,9 @@ export default class Gif extends React.Component<Props, State> {
             name={this.state.name}
             data={this.props.gif}
             toggleModal={() => this.toggleModal()}
-            modalVisibility={this.state.modalVisibility}
+            generateGifLoaded={this.state.generateGifLoaded}
             generateGifRendered={this.state.generateGifRendered}
+            showModal={this.state.showModal}
           />
         )}
       </>
@@ -72,8 +73,9 @@ export default class Gif extends React.Component<Props, State> {
   }
 
   toggleModal() {
-    this.setState({ modalVisibility: false });
     this.setState({ showModal: !this.state.showModal });
+    this.setState({ generateGifLoaded: false });
+    this.setState({ generateGifRendered: false });
   }
 
   async getGifBinary() {
@@ -147,7 +149,7 @@ export default class Gif extends React.Component<Props, State> {
       preview.src = URL.createObjectURL(blob);
       self.setState({ generateGifRendered: true });
       preview.addEventListener('load', (e) => {
-        self.setState({ modalVisibility: true });
+        self.setState({ generateGifLoaded: true });
       });
     });
     gif.render();
