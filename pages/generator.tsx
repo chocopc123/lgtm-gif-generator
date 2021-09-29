@@ -9,12 +9,14 @@ type Props = {
 };
 type State = {
   gifs: any;
+  gifLoaded: boolean;
 };
 export default class Generator extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
       gifs: this.props.gifs,
+      gifLoaded: false,
     };
   }
   render() {
@@ -50,7 +52,7 @@ export default class Generator extends React.Component<Props, State> {
     );
   }
 
-  async getGif(e: React.FormEvent<HTMLFormElement>) {
+  async getGif(e: any) {
     e.preventDefault();
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
