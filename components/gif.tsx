@@ -1,16 +1,18 @@
 import React from 'react';
-import styles from '../styles/Generator.module.css';
+import styles from '../styles/Gif.module.css';
 import Image from 'next/image';
 import Modal from '../components/modal';
+import { CSSTransition } from 'react-transition-group';
 const { GifReader } = require('omggif');
 const GIF = require('gif.js');
 
 type Props = { gif: any };
 type State = {
   name: string;
+  gifLoaded: boolean;
   showModal: boolean;
-  visibility: string;
-  rendered: boolean;
+  modalVisibility: boolean;
+  generateGifRendered: boolean;
 };
 
 export default class Gif extends React.Component<Props, State> {
@@ -18,33 +20,47 @@ export default class Gif extends React.Component<Props, State> {
     super(props);
     this.state = {
       name: 'modalArea',
+      gifLoaded: false,
       showModal: false,
-      visibility: 'invisible',
-      rendered: true,
+      modalVisibility: false,
+      generateGifRendered: false,
     };
   }
 
   render() {
     return (
-      <div>
-        <div className={styles.card} onClick={() => this.generateGif()}>
-          <Image
-            src={this.props.gif.images.fixed_width.url}
-            alt={this.props.gif.title}
-            width={this.props.gif.images.fixed_width.width}
-            height={this.props.gif.images.fixed_width.height}
-          />
-        </div>
+      <>
+        <CSSTransition
+          in={this.state.gifLoaded}
+          timeout={300}
+          classNames={{
+            enter: styles.modalEnter,
+            enterActive: styles.modalEnterActive,
+          }}
+        >
+          <div
+            className={styles.card + ' ' + (this.state.gifLoaded ? 'visible' : 'invisible')}
+            onClick={() => this.generateGif()}
+          >
+            <Image
+              src={this.props.gif.images.fixed_width.url}
+              alt={this.props.gif.title}
+              width={this.props.gif.images.fixed_width.width}
+              height={this.props.gif.images.fixed_width.height}
+              onLoadingComplete={() => this.setState({ gifLoaded: true })}
+            />
+          </div>
+        </CSSTransition>
         {this.state.showModal && (
           <Modal
             name={this.state.name}
             data={this.props.gif}
             toggleModal={() => this.toggleModal()}
-            visibility={this.state.visibility}
-            rendered={this.state.rendered}
+            modalVisibility={this.state.modalVisibility}
+            generateGifRendered={this.state.generateGifRendered}
           />
         )}
-      </div>
+      </>
     );
   }
 
@@ -56,7 +72,7 @@ export default class Gif extends React.Component<Props, State> {
   }
 
   toggleModal() {
-    this.setState({ visibility: 'invisible' });
+    this.setState({ modalVisibility: false });
     this.setState({ showModal: !this.state.showModal });
   }
 
@@ -129,9 +145,9 @@ export default class Gif extends React.Component<Props, State> {
     gif.on('finished', function (blob: any) {
       const preview = document.getElementById('preview') as HTMLImageElement;
       preview.src = URL.createObjectURL(blob);
-      self.setState({ rendered: false });
+      self.setState({ generateGifRendered: true });
       preview.addEventListener('load', (e) => {
-        self.setState({ visibility: 'visible' });
+        self.setState({ modalVisibility: true });
       });
     });
     gif.render();

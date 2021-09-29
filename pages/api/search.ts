@@ -1,10 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type Data = {
-  name: string;
-};
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const giphyApiKey = process.env.GIPHY_API_KEY;
   const searchString = req.query.search;
