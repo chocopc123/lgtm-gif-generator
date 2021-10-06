@@ -29,3 +29,36 @@
 .downloadButton {
   @apply bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-bold py-2 px-4 mr-3 rounded;
 }
+
+.modalEnter {
+  @apply opacity-0;
+  @apply transform -translate-x-1/2 -translate-y-1/2 scale-0;
+}
+.modalEnterActive {
+  @apply opacity-100;
+  @apply transform -translate-x-1/2 -translate-y-1/2;
+  transition: opacity 400ms, transform 400ms;
+}
+.modalExit {
+  @apply opacity-100;
+}
+.modalExitActive {
+  @apply opacity-0;
+  transition: opacity 200ms;
+}
+
+.modalBackgroundEnter {
+  @apply opacity-0;
+}
+.modalBackgroundEnterActive {
+  @apply opacity-100;
+  @apply transition-opacity duration-500;
+}
+
+.modalBackgroundExit {
+  @apply opacity-100;
+}
+.modalBackgroundExitActive {
+  @apply opacity-0;
+  @apply transition-opacity duration-500;
+}

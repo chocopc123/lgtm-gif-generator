@@ -13,34 +13,46 @@ type Props = {
   showModal: boolean;
 };
 
-export default class Modal extends React.Component<Props> {
+type State = {
+  showModal: boolean;
+};
+
+export default class Modal extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      showModal: this.props.showModal,
+    };
   }
   render() {
     return (
       <div className={styles.modalArea}>
         <CSSTransition
-          in={this.props.showModal}
+          in={this.state.showModal}
           appear={true}
-          timeout={1000}
+          timeout={500}
           classNames={{
             appear: styles.modalBackgroundEnter,
             appearActive: styles.modalBackgroundEnterActive,
             exit: styles.modalBackgroundExit,
             exitActive: styles.modalBackgroundExitActive,
           }}
+          unmountOnExit
+          onExited={this.props.toggleModal}
         >
-          <div className={styles.modalBackground} onClick={this.props.toggleModal} />
+          <div className={styles.modalBackground} onClick={() => this.closeModal()} />
         </CSSTransition>
         <CSSTransition
-          in={true}
+          in={this.state.showModal}
           appear={true}
-          timeout={1000}
+          timeout={400}
           classNames={{
             appear: styles.modalEnter,
             appearActive: styles.modalEnterActive,
+            exit: styles.modalExit,
+            exitActive: styles.modalExitActive,
           }}
+          unmountOnExit
         >
           <div className={styles.modalWrapper}>
             <div className="modalContents">
@@ -84,5 +96,9 @@ export default class Modal extends React.Component<Props> {
     a.href = preview.src;
     a.click();
     a.remove();
+  }
+
+  closeModal() {
+    this.setState({ showModal: false });
   }
 }
