@@ -30,7 +30,7 @@ export default class Modal extends React.Component<Props, State> {
         <CSSTransition
           in={this.state.showModal}
           appear={true}
-          timeout={500}
+          timeout={200}
           classNames={{
             appear: styles.modalBackgroundEnter,
             appearActive: styles.modalBackgroundEnterActive,
@@ -45,10 +45,11 @@ export default class Modal extends React.Component<Props, State> {
         <CSSTransition
           in={this.state.showModal}
           appear={true}
-          timeout={400}
+          timeout={200}
           classNames={{
             appear: styles.modalEnter,
             appearActive: styles.modalEnterActive,
+
             exit: styles.modalExit,
             exitActive: styles.modalExitActive,
           }}
