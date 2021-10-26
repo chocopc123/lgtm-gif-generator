@@ -13,7 +13,6 @@ const Gif = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [generateGifLoaded, setGenerateGifLoaded] = useState(false);
   const [generateGifRendered, setGenerateGifRendered] = useState(false);
-
   return (
     <>
       <CSSTransition
