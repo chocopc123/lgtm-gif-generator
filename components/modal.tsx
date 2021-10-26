@@ -5,7 +5,6 @@ import Loading from '../components/loading';
 import { CSSTransition } from 'react-transition-group';
 
 type Props = {
-  name: string;
   data: any;
   toggleModal: any;
   generateGifLoaded: boolean;

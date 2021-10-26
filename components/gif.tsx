@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from '../styles/Gif.module.css';
 import Image from 'next/image';
 import Modal from '../components/modal';
@@ -7,81 +7,65 @@ const { GifReader } = require('omggif');
 const GIF = require('gif.js');
 
 type Props = { gif: any };
-type State = {
-  name: string;
-  gifLoaded: boolean;
-  showModal: boolean;
-  generateGifLoaded: boolean;
-  generateGifRendered: boolean;
-};
 
-export default class Gif extends React.Component<Props, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      name: 'modalArea',
-      gifLoaded: false,
-      showModal: false,
-      generateGifLoaded: false,
-      generateGifRendered: false,
-    };
-  }
+const Gif = (props: Props) => {
+  const [gifLoaded, setGifLoaded] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [generateGifLoaded, setGenerateGifLoaded] = useState(false);
+  const [generateGifRendered, setGenerateGifRendered] = useState(false);
 
-  render() {
-    return (
-      <>
-        <CSSTransition
-          in={this.state.gifLoaded}
-          timeout={300}
-          classNames={{
-            enter: styles.modalEnter,
-            enterActive: styles.modalEnterActive,
-          }}
+  return (
+    <>
+      <CSSTransition
+        in={gifLoaded}
+        timeout={300}
+        classNames={{
+          enter: styles.modalEnter,
+          enterActive: styles.modalEnterActive,
+        }}
+      >
+        <div
+          className={styles.card + ' ' + (gifLoaded ? 'visible' : 'invisible')}
+          onClick={() => generateGif()}
         >
-          <div
-            className={styles.card + ' ' + (this.state.gifLoaded ? 'visible' : 'invisible')}
-            onClick={() => this.generateGif()}
-          >
-            <Image
-              src={this.props.gif.images.fixed_width.url}
-              alt={this.props.gif.title}
-              width={this.props.gif.images.fixed_width.width}
-              height={this.props.gif.images.fixed_width.height}
-              onLoadingComplete={() => this.setState({ gifLoaded: true })}
-            />
-          </div>
-        </CSSTransition>
-        {this.state.showModal && (
-          <Modal
-            name={this.state.name}
-            data={this.props.gif}
-            toggleModal={() => this.toggleModal()}
-            generateGifLoaded={this.state.generateGifLoaded}
-            generateGifRendered={this.state.generateGifRendered}
-            showModal={this.state.showModal}
+          <Image
+            src={props.gif.images.fixed_width.url}
+            alt={props.gif.title}
+            width={props.gif.images.fixed_width.width}
+            height={props.gif.images.fixed_width.height}
+            onLoadingComplete={() => setGifLoaded(true)}
           />
-        )}
-      </>
-    );
+        </div>
+      </CSSTransition>
+      {showModal && (
+        <Modal
+          data={props.gif}
+          toggleModal={() => toggleModal()}
+          generateGifLoaded={generateGifLoaded}
+          generateGifRendered={generateGifRendered}
+          showModal={showModal}
+        />
+      )}
+    </>
+  );
+
+  async function generateGif() {
+    toggleModal();
+    const i8ary = await getGifBinary();
+    const imageArray = createImageArray(i8ary);
+    renderLgtmGif(imageArray);
   }
 
-  async generateGif() {
-    this.toggleModal();
-    const i8ary = await this.getGifBinary();
-    const imageArray = this.createImageArray(i8ary);
-    this.renderLgtmGif(imageArray);
+  function toggleModal() {
+    setShowModal(!showModal);
+    setGenerateGifLoaded(false);
+    setGenerateGifRendered(false);
   }
 
-  toggleModal() {
-    this.setState({ showModal: !this.state.showModal });
-    this.setState({ generateGifLoaded: false });
-    this.setState({ generateGifRendered: false });
-  }
-
-  async getGifBinary() {
+  async function getGifBinary() {
     return new Promise<any>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', this.props.gif.images.fixed_width.url, true);
+      xhr.open('GET', props.gif.images.fixed_width.url, true);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function (e) {
         const arrayBuffer = this.response;
@@ -95,7 +79,7 @@ export default class Gif extends React.Component<Props, State> {
     });
   }
 
-  createImageArray(binary: Uint8Array) {
+  function createImageArray(binary: Uint8Array) {
     const reader = new GifReader(binary);
     const array = new Array(reader.numFrames()).fill(0);
     array.forEach((_, currentFrame) => {
@@ -114,7 +98,7 @@ export default class Gif extends React.Component<Props, State> {
     return array;
   }
 
-  drawText(image: ImageData, i: number) {
+  function drawText(image: ImageData, i: number) {
     const canvas = document.createElement('canvas') as HTMLCanvasElement;
     canvas.height = image.height;
     canvas.width = image.width;
@@ -131,7 +115,7 @@ export default class Gif extends React.Component<Props, State> {
     return canvas;
   }
 
-  renderLgtmGif(imageArray: Array<any>) {
+  function renderLgtmGif(imageArray: Array<any>) {
     const gif = new GIF({
       workers: 2,
       workerScript: '/api/gif.js/gif.worker',
@@ -140,18 +124,19 @@ export default class Gif extends React.Component<Props, State> {
       height: imageArray[0].data.height,
     });
     imageArray.forEach((image, i) => {
-      const canvasElement = this.drawText(image.data, i);
+      const canvasElement = drawText(image.data, i);
       gif.addFrame(canvasElement, { delay: image.delay });
     });
-    const self = this;
     gif.on('finished', function (blob: any) {
       const preview = document.getElementById('preview') as HTMLImageElement;
       preview.src = URL.createObjectURL(blob);
-      self.setState({ generateGifRendered: true });
+      setGenerateGifRendered(true);
       preview.addEventListener('load', (e) => {
-        self.setState({ generateGifLoaded: true });
+        setGenerateGifLoaded(true);
       });
     });
     gif.render();
   }
-}
+};
+
+export default Gif;
