@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Gif from '../components/gif';
 import styles from '../styles/Generator.module.css';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
+import { search } from '../helpers/searchHelpers';
 
 type Props = {
   gifs: any;
@@ -61,15 +62,8 @@ const Generator = (props: Props) => {
   }
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const giphyApiKey = process.env.GIPHY_API_KEY;
-  const gifs = await fetch(
-    `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=15&rating=g`
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      console.error('Error:', err);
-    });
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const gifs = await search(context.query.search);
   return {
     props: {
       gifs,
