@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Gif from '../components/gif';
 import styles from '../styles/Generator.module.css';
@@ -11,6 +11,15 @@ type Props = {
 
 const Generator = (props: Props) => {
   const [gifs, setGifs] = useState(props.gifs);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (!url.searchParams.get('search')) {
+        url.searchParams.delete('search');
+        window.history.replaceState({}, '', `${url.toString()}`);
+      }
+    }
+  }, []);
   return (
     <div className={styles.container}>
       <Head>
@@ -57,7 +66,11 @@ const Generator = (props: Props) => {
 
   function changeUrlParams(searchString: string) {
     const url = new URL(window.location.href);
-    url.searchParams.set('search', searchString);
+    if (searchString) {
+      url.searchParams.set('search', searchString);
+    } else {
+      url.searchParams.delete('search');
+    }
     window.history.replaceState({}, '', `${url.toString()}`);
   }
 };
