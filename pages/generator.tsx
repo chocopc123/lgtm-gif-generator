@@ -12,12 +12,13 @@ type Props = {
 const Generator = (props: Props) => {
   const [gifs, setGifs] = useState(props.gifs);
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const url = new URL(window.location.href);
-      if (!url.searchParams.get('search')) {
-        url.searchParams.delete('search');
-        window.history.replaceState({}, '', `${url.toString()}`);
-      }
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('search')) {
+      const searchInput = document.getElementById('search') as HTMLInputElement;
+      searchInput.value = url.searchParams.get('search') as string;
+    } else {
+      url.searchParams.delete('search');
+      window.history.replaceState({}, '', `${url.toString()}`);
     }
   }, []);
   return (
