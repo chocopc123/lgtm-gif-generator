@@ -63,23 +63,25 @@ const Modal = (props: Props) => {
           <div className="modalContents">
             <h3 className="text-3xl font-bold">{props.data.title}</h3>
             <hr className="my-2" />
-            <div className="flex justify-around">
-              {!generateGifLoaded && (
-                <Image
-                  src={props.data.images.fixed_width.url}
-                  alt={props.data.title}
+            <div className="relative">
+              <div className={styles.gifPreview}>
+                {!generateGifLoaded && (
+                  <Image
+                    src={props.data.images.fixed_width.url}
+                    alt={props.data.title}
+                    width={props.data.images.fixed_width.width}
+                    height={props.data.images.fixed_width.height}
+                  />
+                )}
+                <img
+                  id="preview"
+                  alt={'[Preview] ' + props.data.title}
+                  className={generateGifLoaded ? '' : 'hidden'}
                   width={props.data.images.fixed_width.width}
                   height={props.data.images.fixed_width.height}
                 />
-              )}
-              {/* {!generateGifLoaded && <Loading />} */}
-              <img
-                id="preview"
-                alt={'[Preview] ' + props.data.title}
-                className={generateGifLoaded ? '' : 'hidden'}
-                width={props.data.images.fixed_width.width}
-                height={props.data.images.fixed_width.height}
-              />
+              </div>
+              <div className={styles.gifGenerateLoading}>{!generateGifLoaded && <Loading />}</div>
             </div>
             <hr className="my-2" />
             <button className={styles.closeButton} onClick={props.toggleModal}>
