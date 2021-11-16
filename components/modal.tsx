@@ -67,18 +67,18 @@ const Modal = (props: Props) => {
               <div className={styles.gifPreview}>
                 {!generateGifLoaded && (
                   <Image
-                    src={props.data.images.fixed_width.url}
+                    src={props.data.images.downsized.url}
                     alt={props.data.title}
-                    width={props.data.images.fixed_width.width}
-                    height={props.data.images.fixed_width.height}
+                    width={props.data.images.downsized.width}
+                    height={props.data.images.downsized.height}
                   />
                 )}
                 <img
                   id="preview"
                   alt={'[Preview] ' + props.data.title}
                   className={generateGifLoaded ? '' : 'hidden'}
-                  width={props.data.images.fixed_width.width}
-                  height={props.data.images.fixed_width.height}
+                  width={props.data.images.downsized.width}
+                  height={props.data.images.downsized.height}
                 />
               </div>
               <div className={styles.gifGenerateLoading}>{!generateGifLoaded && <Loading />}</div>
@@ -103,7 +103,7 @@ const Modal = (props: Props) => {
   async function getGifBinary() {
     return new Promise<any>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', props.data.images.fixed_width.url, true);
+      xhr.open('GET', props.data.images.original.url, true);
       xhr.responseType = 'arraybuffer';
       xhr.onload = function (e) {
         const arrayBuffer = this.response;
@@ -136,23 +136,6 @@ const Modal = (props: Props) => {
     return array;
   }
 
-  function drawText(image: ImageData, i: number) {
-    const canvas = document.createElement('canvas') as HTMLCanvasElement;
-    canvas.height = image.height;
-    canvas.width = image.width;
-    const context = canvas.getContext('2d');
-
-    context?.putImageData(image, 0, 0);
-    context!.textAlign = 'center';
-    context!.textBaseline = 'middle';
-    context!.fillStyle = 'white';
-    context!.font = '40px Impact';
-    context?.fillText('L G T M', image.width / 2, image.height / 2);
-    context!.font = '10px sans-serif';
-    context?.fillText('Looks Good To Me', image.width / 2, image.height / 2 + 25);
-    return canvas;
-  }
-
   function renderLgtmGif(imageArray: Array<any>) {
     const gif = new GIF({
       workers: 2,
@@ -176,6 +159,31 @@ const Modal = (props: Props) => {
       }
     });
     gif.render();
+  }
+
+  function drawText(image: ImageData, i: number) {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    canvas.height = image.height;
+    canvas.width = image.width;
+    const context = canvas.getContext('2d');
+    const halfWidth = Math.floor(image.width / 2);
+    const halfHeight = Math.floor(image.height / 2);
+    const isLandscape = image.width / 4 > image.height / 3;
+    let acronymFontSize;
+    if (isLandscape) acronymFontSize = Math.floor(image.height / 3);
+    else acronymFontSize = Math.floor(image.width / 5);
+    var originalMeaningFontSize = Math.floor(acronymFontSize / 4);
+    var lineSpacing = Math.floor(acronymFontSize / 5) * 3;
+
+    context?.putImageData(image, 0, 0);
+    context!.textAlign = 'center';
+    context!.textBaseline = 'middle';
+    context!.fillStyle = 'white';
+    context!.font = `${acronymFontSize}px Impact`;
+    context?.fillText('L G T M', halfWidth, halfHeight);
+    context!.font = `${originalMeaningFontSize}px sans-serif`;
+    context?.fillText('Looks Good To Me', halfWidth, halfHeight + lineSpacing);
+    return canvas;
   }
 
   function downloadGif() {
