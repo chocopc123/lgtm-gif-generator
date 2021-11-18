@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Gif from '../components/gif';
+import Pagination from '../components/pagination';
 import styles from '../styles/Generator.module.css';
 import { GetServerSideProps } from 'next';
 import { search } from '../helpers/searchHelpers';
@@ -11,6 +12,7 @@ type Props = {
 
 const Generator = (props: Props) => {
   const [gifs, setGifs] = useState(props.gifs);
+  const [pageNumber, setPageNumber] = useState(1);
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('search')) {
@@ -29,7 +31,7 @@ const Generator = (props: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="w-3/5">
-        <form className="flex justify-center mt-10" onSubmit={(e) => getGif(e)}>
+        <form className="flex justify-center mt-10" onSubmit={(e) => getSearchGifs(e)}>
           <input
             id="search"
             type="search"
@@ -40,10 +42,15 @@ const Generator = (props: Props) => {
             type="button"
             value="Search"
             className="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded w-1/6 content-center"
-            onClick={(e) => getGif(e)}
+            onClick={(e) => getSearchGifs(e)}
           />
         </form>
       </div>
+      <Pagination
+        pageNumber={pageNumber}
+        setPageNumber={(number: number) => setPageNumber(number)}
+        getGifs={() => getGifs(pageNumber)}
+      />
       <div className={styles.grid}>
         {gifs.data.map((data: any) => (
           <Gif key={data.id} gif={data}></Gif>
@@ -52,12 +59,11 @@ const Generator = (props: Props) => {
     </div>
   );
 
-  async function getGif(e: any) {
-    e.preventDefault();
+  // TODO: 取得したgifの反映が1アクション遅い
+  async function getGifs(pageNumber: number) {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
-    changeUrlParams(searchString);
-    const gifs = await fetch(`/api/search?search=${searchString}`)
+    const gifs = await fetch(`/api/search?search=${searchString}&offset=${(pageNumber - 1) * 15}`)
       .then((response) => response.json())
       .catch((err) => {
         console.error('Error:', err);
@@ -65,7 +71,16 @@ const Generator = (props: Props) => {
     setGifs(gifs);
   }
 
-  function changeUrlParams(searchString: string) {
+  async function getSearchGifs(e: any) {
+    e.preventDefault();
+    changeUrlParams();
+    setPageNumber(1);
+    getGifs(1);
+  }
+
+  function changeUrlParams() {
+    const searchInput = document.getElementById('search') as HTMLInputElement;
+    const searchString = searchInput.value;
     const url = new URL(window.location.href);
     if (searchString) {
       url.searchParams.set('search', searchString);
@@ -77,7 +92,7 @@ const Generator = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const gifs = await search(context.query.search);
+  const gifs = await search(context.query.search, 0);
   return {
     props: {
       gifs,
