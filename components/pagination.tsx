@@ -5,6 +5,8 @@ type Props = {
   pageNumber: number;
   setPageNumber: any;
   getGifs: any;
+  paginationInfo: any;
+  pageLimit: number;
 };
 
 const Pagination = (props: Props) => {
@@ -16,12 +18,18 @@ const Pagination = (props: Props) => {
   );
 
   async function getPreviewPageGifs() {
-    if (props.pageNumber > 1) props.setPageNumber(props.pageNumber - 1);
-    props.getGifs();
+    if (props.pageNumber > 1) {
+      props.setPageNumber(props.pageNumber - 1);
+      props.getGifs(props.pageNumber - 1);
+    }
   }
   async function getNextPageGifs() {
-    props.setPageNumber(props.pageNumber + 1);
-    props.getGifs();
+    const totalCount = props.paginationInfo.total_count;
+    const totalPageCount = Math.ceil(totalCount / props.pageLimit);
+    if (props.pageNumber < totalPageCount) {
+      props.setPageNumber(props.pageNumber + 1);
+      props.getGifs(props.pageNumber + 1);
+    }
   }
 };
 

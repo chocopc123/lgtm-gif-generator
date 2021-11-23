@@ -13,6 +13,7 @@ type Props = {
 const Generator = (props: Props) => {
   const [gifs, setGifs] = useState(props.gifs);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pageLimit, setPageLimit] = useState(15);
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('search')) {
@@ -49,7 +50,9 @@ const Generator = (props: Props) => {
       <Pagination
         pageNumber={pageNumber}
         setPageNumber={(number: number) => setPageNumber(number)}
-        getGifs={() => getGifs(pageNumber)}
+        getGifs={(number: number) => getGifs(number)}
+        paginationInfo={gifs.pagination}
+        pageLimit={pageLimit}
       />
       <div className={styles.grid}>
         {gifs.data.map((data: any) => (
@@ -59,11 +62,12 @@ const Generator = (props: Props) => {
     </div>
   );
 
-  // TODO: 取得したgifの反映が1アクション遅い
   async function getGifs(pageNumber: number) {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
-    const gifs = await fetch(`/api/search?search=${searchString}&offset=${(pageNumber - 1) * 15}`)
+    const gifs = await fetch(
+      `/api/search?search=${searchString}&offset=${(pageNumber - 1) * pageLimit}`
+    )
       .then((response) => response.json())
       .catch((err) => {
         console.error('Error:', err);
@@ -92,7 +96,7 @@ const Generator = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const gifs = await search(context.query.search, 0);
+  const gifs = await search(context.query.search, 0, 15);
   return {
     props: {
       gifs,
