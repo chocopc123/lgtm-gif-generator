@@ -1,4 +1,8 @@
-async function search(searchString: any, offset: number, limit: number) {
+async function search(
+  searchString: string | string[],
+  offset: string | string[],
+  limit: string | string[]
+) {
   const giphyApiKey = process.env.GIPHY_API_KEY;
   var url;
   if (searchString) {

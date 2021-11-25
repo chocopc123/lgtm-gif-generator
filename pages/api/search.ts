@@ -3,6 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { search } from '../../helpers/searchHelpers';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const gifs = await search(req.query.search, Number(req.query.offset));
+  const gifs = await search(req.query.search, req.query.offset, req.query.limit);
   res.status(200).json(gifs);
 }

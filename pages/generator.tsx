@@ -66,7 +66,7 @@ const Generator = (props: Props) => {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
     const gifs = await fetch(
-      `/api/search?search=${searchString}&offset=${(pageNumber - 1) * pageLimit}`
+      `/api/search?search=${searchString}&offset=${(pageNumber - 1) * pageLimit}&limit=${pageLimit}`
     )
       .then((response) => response.json())
       .catch((err) => {
