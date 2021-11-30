@@ -53,6 +53,7 @@ const Generator = (props: Props) => {
         </form>
       </div>
       <Pagination
+        className="mt-2"
         count={maxPages < totalPageCount ? maxPages : totalPageCount}
         shape="rounded"
         size="large"
