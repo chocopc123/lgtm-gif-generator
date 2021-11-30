@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.2",
     "@types/react-transition-group": "^4.4.3",
     "ansi-regex": "^6.0.1",
     "gif.js": "^0.2.0",
