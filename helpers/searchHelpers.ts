@@ -1,5 +1,5 @@
 async function search(
-  searchString: string | string[],
+  searchString: string | string[] | undefined,
   offset: string | string[],
   limit: string | string[]
 ) {

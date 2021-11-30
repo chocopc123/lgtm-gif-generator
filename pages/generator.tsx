@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Gif from '../components/gif';
-import Pagination from '../components/pagination';
 import styles from '../styles/Generator.module.css';
 import { GetServerSideProps } from 'next';
 import { search } from '../helpers/searchHelpers';
+import { Pagination } from '@mui/material';
 
 type Props = {
   gifs: any;
@@ -14,6 +14,10 @@ const Generator = (props: Props) => {
   const [gifs, setGifs] = useState(props.gifs);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageLimit, setPageLimit] = useState(15);
+  const totalCount = gifs.pagination.total_count;
+  const totalPageCount = Math.ceil(totalCount / pageLimit);
+  const maxPages = Math.ceil(5000 / pageLimit);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('search')) {
@@ -24,6 +28,7 @@ const Generator = (props: Props) => {
       window.history.replaceState({}, '', `${url.toString()}`);
     }
   }, []);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -48,11 +53,11 @@ const Generator = (props: Props) => {
         </form>
       </div>
       <Pagination
-        pageNumber={pageNumber}
-        setPageNumber={(number: number) => setPageNumber(number)}
-        getGifs={(number: number) => getGifs(number)}
-        paginationInfo={gifs.pagination}
-        pageLimit={pageLimit}
+        count={maxPages < totalPageCount ? maxPages : totalPageCount}
+        shape="rounded"
+        size="large"
+        page={pageNumber}
+        onChange={getPageGifs}
       />
       <div className={styles.grid}>
         {gifs.data.map((data: any) => (
@@ -82,6 +87,11 @@ const Generator = (props: Props) => {
     getGifs(1);
   }
 
+  function getPageGifs(event: React.ChangeEvent<unknown>, page: number) {
+    setPageNumber(page);
+    getGifs(page);
+  }
+
   function changeUrlParams() {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
@@ -96,7 +106,7 @@ const Generator = (props: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const gifs = await search(context.query.search, 0, 15);
+  const gifs = await search(context.query.search, '0', '15');
   return {
     props: {
       gifs,
