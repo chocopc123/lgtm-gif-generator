@@ -36,6 +36,7 @@ const Generator = (props: Props) => {
         <meta name="description" content="Generate LGTM Gif from GIPHY" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <div className="w-3/5">
         <form className="flex justify-center mt-10" onSubmit={(e) => getSearchGifs(e)}>
           <input
@@ -52,19 +53,21 @@ const Generator = (props: Props) => {
           />
         </form>
       </div>
+
+      <div className={styles.grid}>
+        {gifs.data.map((data: any) => (
+          <Gif key={data.id} gif={data}></Gif>
+        ))}
+      </div>
+
       <Pagination
-        className="mt-2"
+        className="my-5"
         count={maxPages < totalPageCount ? maxPages : totalPageCount}
         shape="rounded"
         size="large"
         page={pageNumber}
         onChange={getPageGifs}
       />
-      <div className={styles.grid}>
-        {gifs.data.map((data: any) => (
-          <Gif key={data.id} gif={data}></Gif>
-        ))}
-      </div>
     </div>
   );
 
