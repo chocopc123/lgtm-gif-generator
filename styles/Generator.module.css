@@ -3,7 +3,6 @@
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
@@ -13,5 +12,5 @@
   justify-content: center;
   flex-wrap: wrap;
   max-width: 1500px;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 }
