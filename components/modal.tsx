@@ -73,6 +73,7 @@ const Modal = (props: Props) => {
                     height={props.data.images.downsized.height}
                   />
                 )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   id="preview"
                   alt={'[Preview] ' + props.data.title}
