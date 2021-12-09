@@ -10,7 +10,7 @@ async function search(
       `https://api.giphy.com/v1/gifs/search?api_key=${giphyApiKey}&q=${searchString}&limit=${limit}&offset=${offset}&rating=g&lang=en`
     );
   } else {
-    url = `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=${limit}&rating=g`;
+    url = `https://api.giphy.com/v1/gifs/trending?api_key=${giphyApiKey}&limit=${limit}&rating=g&offset=${offset}`;
   }
   return await fetch(url)
     .then((res) => res.json())

@@ -30,6 +30,10 @@ const Generator = (props: Props) => {
     }
     // デフォルトで検索フォームにカーソル配置
     searchInput.focus();
+    // queryparamsにpageが存在する場合はpropsに設定
+    if (url.searchParams.get('page')) {
+      setPageNumber(Number(url.searchParams.get('page')));
+    }
   }, []);
 
   return (
@@ -89,31 +93,36 @@ const Generator = (props: Props) => {
 
   async function getSearchGifs(e: any) {
     e.preventDefault();
-    changeUrlParams();
-    setPageNumber(1);
+    const searchString = (document.getElementById('search') as HTMLInputElement).value;
+    changeUrlParams('search', searchString);
+    setPage(1);
     getGifs(1);
   }
 
   function getPageGifs(event: React.ChangeEvent<unknown>, page: number) {
-    setPageNumber(page);
+    setPage(page);
     getGifs(page);
   }
 
-  function changeUrlParams() {
-    const searchInput = document.getElementById('search') as HTMLInputElement;
-    const searchString = searchInput.value;
+  function setPage(pageNumber: number) {
+    setPageNumber(pageNumber);
+    changeUrlParams('page', pageNumber.toString());
+  }
+
+  function changeUrlParams(paramName: string, paramValue: string | null) {
     const url = new URL(window.location.href);
-    if (searchString) {
-      url.searchParams.set('search', searchString);
+    if (paramValue) {
+      url.searchParams.set(paramName, paramValue);
     } else {
-      url.searchParams.delete('search');
+      url.searchParams.delete(paramName);
     }
     window.history.replaceState({}, '', `${url.toString()}`);
   }
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const gifs = await search(context.query.search, '0', '15');
+  const offset = (Number(context.query.page) - 1) * 15;
+  const gifs = await search(context.query.search, offset.toString(), '15');
   return {
     props: {
       gifs,
