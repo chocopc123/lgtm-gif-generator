@@ -28,7 +28,7 @@ const Generator = (props: Props) => {
       url.searchParams.delete('search');
       window.history.replaceState({}, '', `${url.toString()}`);
     }
-    // 検索フォームにフォーカス
+    // デフォルトで検索フォームにカーソル配置
     searchInput.focus();
   }, []);
 
