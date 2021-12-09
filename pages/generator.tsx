@@ -20,13 +20,16 @@ const Generator = (props: Props) => {
 
   useEffect(() => {
     const url = new URL(window.location.href);
+    const searchInput = document.getElementById('search') as HTMLInputElement;
+    // queryparamsにsearchが存在する場合は検索フォームにも反映
     if (url.searchParams.get('search')) {
-      const searchInput = document.getElementById('search') as HTMLInputElement;
       searchInput.value = url.searchParams.get('search') as string;
     } else {
       url.searchParams.delete('search');
       window.history.replaceState({}, '', `${url.toString()}`);
     }
+    // 検索フォームにフォーカス
+    searchInput.focus();
   }, []);
 
   return (
