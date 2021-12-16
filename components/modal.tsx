@@ -44,7 +44,7 @@ const Modal = (props: Props) => {
         unmountOnExit
         onExited={props.toggleModal}
       >
-        <div className={styles.modalBackground} onClick={() => closeModal()} />
+        <div className={styles.modalBackground} onClick={() => setShowModal(false)} />
       </CSSTransition>
       <CSSTransition
         in={showModal}
@@ -195,10 +195,6 @@ const Modal = (props: Props) => {
     a.href = preview.src;
     a.click();
     a.remove();
-  }
-
-  function closeModal() {
-    setShowModal(false);
   }
 };
 
