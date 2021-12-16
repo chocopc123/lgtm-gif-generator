@@ -22,7 +22,7 @@ const Gif = (props: Props) => {
       >
         <div
           className={styles.card + ' ' + (gifLoaded ? 'visible' : 'invisible')}
-          onClick={() => toggleModal()}
+          onClick={() => setShowModal(!showModal)}
         >
           <Image
             src={props.gif.images.fixed_width.url}
@@ -34,14 +34,14 @@ const Gif = (props: Props) => {
         </div>
       </CSSTransition>
       {showModal && (
-        <Modal data={props.gif} toggleModal={() => toggleModal()} showModal={showModal} />
+        <Modal
+          data={props.gif}
+          toggleModal={() => setShowModal(!showModal)}
+          showModal={showModal}
+        />
       )}
     </>
   );
-
-  function toggleModal() {
-    setShowModal(!showModal);
-  }
 };
 
 export default Gif;
