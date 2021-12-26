@@ -27,8 +27,10 @@ const Generator = (props: Props) => {
     } else {
       deleteUrlParams('search');
     }
+
     // デフォルトで検索フォームにカーソル配置
     searchInput.focus();
+
     // queryparamsにpageが存在する場合はpropsに設定
     const page = Number(url.searchParams.get('page'));
     if (page > 1) {
