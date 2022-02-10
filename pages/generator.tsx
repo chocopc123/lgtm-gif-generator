@@ -5,18 +5,28 @@ import styles from '../styles/Generator.module.css';
 import { GetServerSideProps } from 'next';
 import { search } from '../helpers/searchHelpers';
 import { Pagination } from '@mui/material';
+import { constants } from '../common/constants';
 
 type Props = {
   gifs: any;
 };
 
 const Generator = (props: Props) => {
+  // Gifデータ
   const [gifs, setGifs] = useState(props.gifs);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageLimit, setPageLimit] = useState(15);
-  const totalCount = gifs.pagination.total_count;
-  const totalPageCount = Math.ceil(totalCount / pageLimit);
-  const maxPages = Math.ceil(5000 / pageLimit);
+  // 現在のページ番号
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  // 1ページに表示するGifの数
+  const [gifDisplayNumber, setGifDisplayNumber] = useState(15);
+
+  // 1度のリクエストでAPIから取得可能なGifの数
+  const gifLimitNumber = constants.GIF_LIMIT_NUMBER;
+  // Gifの検索結果件数
+  const totalGifCount = gifs.pagination.total_count;
+  // 実際にAPIから取得したGifの数
+  const gotGifCount = totalGifCount > gifLimitNumber ? gifLimitNumber : totalGifCount;
+  // 総ページ数
+  const totalPageNumber = Math.ceil(gotGifCount / gifDisplayNumber);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -35,7 +45,7 @@ const Generator = (props: Props) => {
     const page = Number(url.searchParams.get('page'));
     if (page > 1) {
       const adjustedPage = page > 0 ? page : 1;
-      setPageNumber(adjustedPage);
+      setCurrentPageNumber(adjustedPage);
     } else {
       deleteUrlParams('page');
     }
@@ -74,20 +84,22 @@ const Generator = (props: Props) => {
 
       <Pagination
         className="my-5"
-        count={maxPages < totalPageCount ? maxPages : totalPageCount}
+        count={totalPageNumber}
         shape="rounded"
         size="large"
-        page={pageNumber}
+        page={currentPageNumber}
         onChange={getPageGifs}
       />
     </div>
   );
 
-  async function getGifs(pageNumber: number) {
+  async function getGifs(currentPageNumber: number) {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
     const gifs = await fetch(
-      `/api/search?search=${searchString}&offset=${(pageNumber - 1) * pageLimit}&limit=${pageLimit}`
+      `/api/search?search=${searchString}&offset=${
+        (currentPageNumber - 1) * gifDisplayNumber
+      }&limit=${gifDisplayNumber}`
     )
       .then((response) => response.json())
       .catch((err) => {
@@ -109,10 +121,10 @@ const Generator = (props: Props) => {
     getGifs(page);
   }
 
-  function setPage(pageNumber: number) {
-    setPageNumber(pageNumber);
-    if (pageNumber > 1) {
-      changeUrlParams('page', pageNumber.toString());
+  function setPage(currentPageNumber: number) {
+    setCurrentPageNumber(currentPageNumber);
+    if (currentPageNumber > 1) {
+      changeUrlParams('page', currentPageNumber.toString());
     } else {
       deleteUrlParams('page');
     }
