@@ -54,8 +54,8 @@ const Generator = (props: Props) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Generate LGTM Gif</title>
-        <meta name="description" content="Generate LGTM Gif from GIPHY" />
+        <title>Generate LGTM GIF</title>
+        <meta name="description" content="Generate LGTM GIF from GIPHY" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -93,7 +93,7 @@ const Generator = (props: Props) => {
     </div>
   );
 
-  async function getGifs(currentPageNumber: number) {
+  async function getGIF(currentPageNumber: number) {
     const searchInput = document.getElementById('search') as HTMLInputElement;
     const searchString = searchInput.value;
     const gifs = await fetch(

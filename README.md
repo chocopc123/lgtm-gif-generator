@@ -1,9 +1,9 @@
-# LGTM Gif Generator
+# LGTM GIF Generator
 
 ## なにこれ
 
-Giphyから取得したGifにLGTM文字を追加してダウンロードできる
+Giphy から取得した GIF に LGTM 文字を追加してダウンロードできる
 
 ## 参考
 
-[GIF画像検索してブラウザでLGTM画像生成とアップロードをしてMarkdown記法でコピーできるツール作った話 - Qiita](https://qiita.com/himanushi/items/f51f49b508d102789b4a)
+[GIF 画像検索してブラウザで LGTM 画像生成とアップロードをして Markdown 記法でコピーできるツール作った話 - Qiita](https://qiita.com/himanushi/items/f51f49b508d102789b4a)
